@@ -44,4 +44,25 @@ router.post("/login", async (req, res) => {
     res.status(400).json({ message: "Server error" });
   }
 });
+
+const authenticate = async (req, res, next) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.status(401).json({ message: "Unauthorized" });
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ message: "Token is invalid" });
+    req.user = user; // Attach user context to the request
+    next();
+  });
+};
+
+router.get('/auth', authenticate, async (req, res) => {
+
+  const { userId } = req.user;
+  const user = await User.findOne({ userId });
+  console.log(user);
+
+  res.json({ message: `Hello ${user.username}, you have access!`, username: user.username });
+});
+
 module.exports = router;
