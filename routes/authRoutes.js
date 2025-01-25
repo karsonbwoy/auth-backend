@@ -39,7 +39,7 @@ router.post("/login", async (req, res) => {
       expiresIn: "1h",
     });
 
-    res.status(200).json({ token, userId: user._id, userName: user.username });
+    res.status(200).json({ token, userId: user._id, userName: user.username, userNotes: user.notes });
   } catch (error) {
     res.status(400).json({ message: "Server error" });
   }
@@ -60,7 +60,7 @@ router.get('/auth', authenticate, async (req, res) => {
 
   const { userId } = req.user;
   const user = await User.findOne({ userId });
-  console.log(user);
+  console.log("auth: " + user);
 
   res.json({ message: `Hello ${user.username}, you have access!`, username: user.username });
 });
