@@ -55,6 +55,16 @@ const authenticate = async (req, res, next) => {
     next();
   });
 };
+router.post('/notes', authenticate, async (req, res) => {
+
+  const { userId } = req.user;
+  const { userNotes } = req.body;
+  const user = await User.findOne({ userId });
+  console.log("user: " + user + " updated notes", "notes: " + userNotes);
+  user.notes = userNotes;
+  user.save();
+  res.json({ message: `Notes updated successfuly!` });
+});
 
 router.get('/auth', authenticate, async (req, res) => {
 
@@ -64,5 +74,6 @@ router.get('/auth', authenticate, async (req, res) => {
 
   res.json({ message: `Hello ${user.username}, you have access!`, username: user.username });
 });
+
 
 module.exports = router;
