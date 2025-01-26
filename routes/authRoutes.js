@@ -72,7 +72,7 @@ router.get('/auth', authenticate, async (req, res) => {
   const user = await User.findOne({ userId });
   console.log("auth: " + user);
 
-  res.json({ message: `Hello ${user.username}, you have access!`, username: user.username });
+  res.json({ message: `Hello ${user.username}, you have access!`, user: user });
 });
 
 
