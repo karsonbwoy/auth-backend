@@ -48,7 +48,6 @@ router.post("/login", async (req, res) => {
 const authenticate = async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) return res.status(401).json({ message: "Unauthorized" });
-
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) return res.status(403).json({ message: "Token is invalid" });
     req.user = user; // Attach user context to the request
@@ -59,8 +58,10 @@ router.post('/notes', authenticate, async (req, res) => {
 
   const { userId } = req.user;
   const { userNotes } = req.body;
+
   const user = await User.findOne({ userId });
-  console.log("user: " + user + " updated notes", "notes: " + userNotes);
+  console.log("user: " + user.username + " updated notes");
+  console.log("notes: " + userNotes);
   user.notes = userNotes;
   user.save();
   res.json({ message: `Notes updated successfuly!` });
@@ -70,7 +71,7 @@ router.get('/auth', authenticate, async (req, res) => {
 
   const { userId } = req.user;
   const user = await User.findOne({ userId });
-  console.log("auth: " + user);
+  console.log("auth: " + user.username);
 
   res.json({ message: `Hello ${user.username}, you have access!`, user: user });
 });
